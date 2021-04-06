@@ -261,7 +261,7 @@ for epoch in range(EPOCHS):
       break
   # saving (checkpoint) the model every 2 epochs
   break
-
+"""
 #taken from this StackOverflow answer: https://stackoverflow.com/a/39225039
 import requests
 
@@ -306,7 +306,7 @@ download_file_from_google_drive(file_id2, destination2)
 
 
 encoder.load_weights('encoder_eng_2_ita.h5')
-onestepdecoder.load_weights('decoder_eng_2_ita.h5')
+onestepdecoder.load_weights('decoder_eng_2_ita.h5')"""
 
 def preprocess_sentence_(w):
     w = unicode_to_ascii(w.lower().strip())
