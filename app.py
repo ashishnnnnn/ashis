@@ -262,6 +262,49 @@ for epoch in range(EPOCHS):
   # saving (checkpoint) the model every 2 epochs
   break
 
+#taken from this StackOverflow answer: https://stackoverflow.com/a/39225039
+import requests
+
+def download_file_from_google_drive(id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params = { 'id' : id }, stream = True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = { 'id' : id, 'confirm' : token }
+        response = session.get(URL, params = params, stream = True)
+
+    save_response_content(response, destination)    
+
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk: # filter out keep-alive new chunks
+                f.write(chunk)
+
+#https://drive.google.com/file/d/1-3-AejIbtzHPOWyvXGBRiVzofpcSA762/view?usp=sharing
+#https://drive.google.com/file/d/1-3W38Kw_QgkDnd2pizZPvR5tcgj4pv_L/view?usp=sharing
+
+file_id1 = '1-3-AejIbtzHPOWyvXGBRiVzofpcSA762'
+file_id2 = '1-3W38Kw_QgkDnd2pizZPvR5tcgj4pv_L'
+destination1 = 'encoder_eng_2_ita.h5'
+destination2 = 'decoder_eng_2_ita.h5'
+download_file_from_google_drive(file_id1, destination1)
+download_file_from_google_drive(file_id2, destination2)
+
+
 encoder.load_weights('encoder_eng_2_ita.h5')
 onestepdecoder.load_weights('decoder_eng_2_ita.h5')
 
